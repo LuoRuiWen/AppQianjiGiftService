@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qianjitec.gift.dao.GiftEntityDao">
+  <resultMap id="BaseResultMap" type="com.qianjitec.gift.entity.GiftEntity">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="gift_name" jdbcType="VARCHAR" property="giftName" />
+    <result column="credits" jdbcType="VARCHAR" property="credits" />
+    <result column="picture_cover_path" jdbcType="VARCHAR" property="pictureCoverPath" />
+    <result column="currency" jdbcType="DOUBLE" property="currency" />
+    <result column="is_deleted" jdbcType="BIT" property="isDeleted" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, gift_name, credits, picture_cover_path, currency
+  </sql>
+
+  <!-- 前端查询礼品列表 -->
+  <select id="frontGiftList" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from t_gift_summary
+    where is_deleted = 0
+  </select>
+
+  <!-- 获取单条礼品信息 -->
+  <select id="getOneEntityInfo" parameterType="String" resultMap="BaseResultMap">
+    select  <include refid="Base_Column_List" />
+    from t_gift_summary
+    where is_deleted = 0
+    and id = #{id,jdbcType=VARCHAR}
+  </select>
+
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_gift_summary
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from t_gift_summary
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.qianjitec.gift.entity.GiftEntity">
+    insert into t_gift_summary (id, gift_name, credits, 
+      picture_cover_path, currency)
+    values (#{id,jdbcType=VARCHAR}, #{giftName,jdbcType=VARCHAR}, #{credits,jdbcType=VARCHAR}, 
+      #{pictureCoverPath,jdbcType=VARCHAR}, #{currency,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qianjitec.gift.entity.GiftEntity">
+    insert into t_gift_summary
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="giftName != null">
+        gift_name,
+      </if>
+      <if test="credits != null">
+        credits,
+      </if>
+      <if test="pictureCoverPath != null">
+        picture_cover_path,
+      </if>
+      <if test="currency != null">
+        currency,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="giftName != null">
+        #{giftName,jdbcType=VARCHAR},
+      </if>
+      <if test="credits != null">
+        #{credits,jdbcType=VARCHAR},
+      </if>
+      <if test="pictureCoverPath != null">
+        #{pictureCoverPath,jdbcType=VARCHAR},
+      </if>
+      <if test="currency != null">
+        #{currency,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qianjitec.gift.entity.GiftEntity">
+    update t_gift_summary
+    <set>
+      <if test="giftName != null">
+        gift_name = #{giftName,jdbcType=VARCHAR},
+      </if>
+      <if test="credits != null">
+        credits = #{credits,jdbcType=VARCHAR},
+      </if>
+      <if test="pictureCoverPath != null">
+        picture_cover_path = #{pictureCoverPath,jdbcType=VARCHAR},
+      </if>
+      <if test="currency != null">
+        currency = #{currency,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qianjitec.gift.entity.GiftEntity">
+    update t_gift_summary
+    set gift_name = #{giftName,jdbcType=VARCHAR},
+      credits = #{credits,jdbcType=VARCHAR},
+      picture_cover_path = #{pictureCoverPath,jdbcType=VARCHAR},
+      currency = #{currency,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

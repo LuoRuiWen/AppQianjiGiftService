@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qianjitec.gift.dao.OrderEntityDao">
+  <resultMap id="BaseResultMap" type="com.qianjitec.gift.entity.OrderEntity">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="mem_id" jdbcType="VARCHAR" property="memId" />
+    <result column="gift_id" jdbcType="VARCHAR" property="giftId" />
+    <result column="num" jdbcType="INTEGER" property="num" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="receive_time" jdbcType="TIMESTAMP" property="receiveTime" />
+    <result column="deliver_time" jdbcType="TIMESTAMP" property="deliverTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="actual_price" jdbcType="DOUBLE" property="actualPrice" />
+    <result column="price" jdbcType="DOUBLE" property="price" />
+    <result column="currency" jdbcType="VARCHAR" property="currency" />
+    <result column="is_deleted" jdbcType="BIT" property="isDeleted" />
+    <result column="credits" jdbcType="DOUBLE" property="credits"/>
+    <result column="actual_credits" jdbcType="DOUBLE" property="actualCredits"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, mem_id, gift_id, num, type, status, address_id, create_time, receive_time, deliver_time,
+    update_time, actual_price, price, currency, is_deleted
+  </sql>
+
+  <!-- 生成一条新订单 -->
+  <insert id="generateOneOrder" parameterType="com.qianjitec.gift.entity.OrderEntity">
+    insert into t_gift_order(
+      id,mem_id,gift_id,num,type,status,
+      create_time,
+      <if test="price!=null">
+        price,
+      </if>
+      <if test="actualPrice!=null">
+        actual_price,
+      </if>
+      credits,actual_credits,
+      currency,addressee_name,area,
+      detailed_address,mobile,email
+    )
+    values(
+      #{id,jdbcType=VARCHAR}, #{memId,jdbcType=VARCHAR}, #{giftId,jdbcType=VARCHAR},
+      #{num,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{status,jdbcType=INTEGER},
+      #{createTime,jdbcType=TIMESTAMP},
+      <if test="price!=null">
+        #{price,jdbcType=DOUBLE},
+      </if>
+      <if test="actualPrice!=null">
+        #{actualPrice,jdbcType=DOUBLE},
+      </if>
+      #{credits,jdbcType=DOUBLE},#{actualCredits,jdbcType=DOUBLE},
+      #{currency,jdbcType=VARCHAR},#{addresseeName,jdbcType=VARCHAR},
+      #{area,jdbcType=VARCHAR},#{detailedAdress,jdbcType=VARCHAR},
+      #{mobile,jdbcType=VARCHAR},#{email,jdbcType=VARCHAR},
+    )
+  </insert>
+
+  <!-- 会员订单详情获取 -->
+  <select id="userOrderInfo" parameterType="String" resultMap="BaseResultMap">
+    select
+    id, mem_id, gift_id, num, type, status, create_time, receive_time, deliver_time,
+    update_time,price,actual_price,credits, actual_credits, currency,addressee_name,area,
+    detailed_address,mobile,email
+    from t_gift_order
+    where id=#{id,jdbcType=VARCHAR}
+    and is_deleted = 0
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_gift_order
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from t_gift_order
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.qianjitec.gift.entity.OrderEntity">
+    insert into t_gift_order (id, mem_id, gift_id,
+      num, type, status, 
+      address_id, create_time, receive_time, 
+      deliver_time, update_time, actual_price,
+      price, currency, is_deleted
+      )
+    values (#{id,jdbcType=VARCHAR}, #{memId,jdbcType=VARCHAR}, #{giftId,jdbcType=VARCHAR},
+      #{num,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
+      #{addressId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{receiveTime,jdbcType=TIMESTAMP}, 
+      #{deliverTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{actualPrice,jdbcType=DOUBLE},
+      #{price,jdbcType=DOUBLE}, #{currency,jdbcType=VARCHAR}, #{isDeleted,jdbcType=BIT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.qianjitec.gift.entity.OrderEntity">
+    insert into t_gift_order
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="memId != null">
+        mem_id,
+      </if>
+      <if test="giftId != null">
+        gift_id,
+      </if>
+      <if test="num != null">
+        num,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="addressId != null">
+        address_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="receiveTime != null">
+        receive_time,
+      </if>
+      <if test="deliverTime != null">
+        deliver_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="actualPrice != null">
+        actual_price,
+      </if>
+      <if test="price != null">
+        price,
+      </if>
+      <if test="currency != null">
+        currency,
+      </if>
+      <if test="isDeleted != null">
+        is_deleted,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="memId != null">
+        #{memId,jdbcType=VARCHAR},
+      </if>
+      <if test="giftId != null">
+        #{giftId,jdbcType=VARCHAR},
+      </if>
+      <if test="num != null">
+        #{num,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="addressId != null">
+        #{addressId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="receiveTime != null">
+        #{receiveTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deliverTime != null">
+        #{deliverTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actualPrice != null">
+        #{actualPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="price != null">
+        #{price,jdbcType=DOUBLE},
+      </if>
+      <if test="currency != null">
+        #{currency,jdbcType=VARCHAR},
+      </if>
+      <if test="isDeleted != null">
+        #{isDeleted,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qianjitec.gift.entity.OrderEntity">
+    update t_gift_order
+    <set>
+      <if test="memId != null">
+        mem_id = #{memId,jdbcType=VARCHAR},
+      </if>
+      <if test="giftId != null">
+        gift_id = #{giftId,jdbcType=VARCHAR},
+      </if>
+      <if test="num != null">
+        num = #{num,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="addressId != null">
+        address_id = #{addressId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="receiveTime != null">
+        receive_time = #{receiveTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deliverTime != null">
+        deliver_time = #{deliverTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actualPrice != null">
+        actual_price = #{actualPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=DOUBLE},
+      </if>
+      <if test="currency != null">
+        currency = #{currency,jdbcType=VARCHAR},
+      </if>
+      <if test="isDeleted != null">
+        is_deleted = #{isDeleted,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qianjitec.gift.entity.OrderEntity">
+    update t_gift_order
+    set mem_id = #{memId,jdbcType=VARCHAR},
+      gift_id = #{giftId,jdbcType=VARCHAR},
+      num = #{num,jdbcType=INTEGER},
+      type = #{type,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      address_id = #{addressId,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      receive_time = #{receiveTime,jdbcType=TIMESTAMP},
+      deliver_time = #{deliverTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      actual_price = #{actualPrice,jdbcType=DOUBLE},
+      price = #{price,jdbcType=DOUBLE},
+      currency = #{currency,jdbcType=VARCHAR},
+      is_deleted = #{isDeleted,jdbcType=BIT}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
